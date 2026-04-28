@@ -2832,6 +2832,8 @@ await sock.updateMediaMessage(msg)
 ```
 
 ## Initiate Voice Call
+> [!WARNING]
+> **This Function has been depreceated**
 
 - Initiates outgoing call signaling to a 1:1 or group jid
 - Supports audio (default) and video calls
