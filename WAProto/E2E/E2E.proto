@@ -13,6 +13,7 @@ message GroupRootKeyShareEntry {
     optional bytes groupRootKey = 1;
     optional string keyId = 2;
     optional int64 expiryTimestampMs = 3;
+    optional int64 createdTimestampMs = 4;
 }
 
 message GroupRootKeyShare {
@@ -431,6 +432,8 @@ message ContextInfo {
             BESTSELLERS = 8;
             MENU = 9;
             ABOUT = 10;
+            SHOP = 11;
+            ORDER = 12;
         }
     }
     message BusinessMessageForwardInfo {
@@ -691,8 +694,9 @@ message Message {
     optional PollAddOptionMessage pollAddOptionMessage = 121;
     optional EventInviteMessage eventInviteMessage = 122;
     optional GroupRootKeyShare groupRootKeyShare = 123;
-    optional P2PPaymentReminderNotification p2PPaymentReminderNotification = 124;
+    optional PaymentReminderMessage paymentReminderMessage = 124;
     optional SplitPaymentMessage splitPaymentMessage = 125;
+    optional FutureProofMessage newsletterAdminProfileStatusMessage = 126;
     message AlbumMessage {
         optional uint32 expectedImageCount = 2;
         optional uint32 expectedVideoCount = 3;
@@ -981,6 +985,7 @@ message Message {
         optional string caption = 6;
         optional bool isCanceled = 7;
         optional int64 endTime = 8;
+        optional string callLink = 9;
     }
     message EventMessage {
         optional ContextInfo contextInfo = 1;
@@ -1240,6 +1245,7 @@ message Message {
             optional string uuid = 1;
             optional string data = 2;
             optional string type = 3;
+            optional string fallback = 4;
         }
         message Body {
             optional string text = 1;
@@ -1511,34 +1517,6 @@ message Message {
             CATALOG = 1;
         }
     }
-    message P2PPaymentReminderNotification {
-        optional string reminderId = 1;
-        optional Money amount = 2;
-        optional ReminderFrequency frequency = 3;
-        optional int64 nextReminderTimestamp = 4;
-        optional int64 expiryTimestamp = 5;
-        optional ReminderState state = 6;
-        optional string description = 7;
-        optional string creatorJid = 8;
-        optional string receiverJid = 9;
-        optional string upiId = 10;
-        optional int64 createdTimestamp = 11;
-        enum ReminderFrequency {
-            UNKNOWN_FREQUENCY = 0;
-            WEEKLY = 1;
-            BIWEEKLY = 2;
-            MONTHLY = 3;
-            CUSTOM = 4;
-        }
-        enum ReminderState {
-            UNKNOWN_STATE = 0;
-            ACTIVE = 1;
-            PAUSED = 2;
-            STOPPED = 3;
-            EXPIRED = 4;
-            CANCELLED = 5;
-        }
-    }
     message PaymentExtendedMetadata {
         optional uint32 type = 1;
         optional string platform = 2;
@@ -1576,6 +1554,32 @@ message Message {
         }
         message PaymentLinkProvider {
             optional string paramsJson = 1;
+        }
+    }
+    message PaymentReminderMessage {
+        optional string reminderId = 1;
+        optional string instanceId = 2;
+        optional string description = 3;
+        optional ReminderFrequency frequency = 4;
+        optional ReminderStatus status = 5;
+        optional string payeeVpa = 6;
+        optional string payeeJid = 7;
+        optional string payerJid = 8;
+        optional Money amount = 9;
+        enum ReminderFrequency {
+            REMINDER_FREQUENCY_UNKNOWN = 0;
+            WEEKLY = 1;
+            BI_WEEKLY = 2;
+            MONTHLY = 3;
+            QUARTERLY = 4;
+        }
+        enum ReminderStatus {
+            REMINDER_STATUS_UNKNOWN = 0;
+            ACTIVE = 1;
+            CANCELLED_BY_CREATOR = 2;
+            STOPPED_BY_RECEIVER = 3;
+            EXPIRED = 4;
+            PAID = 5;
         }
     }
     message PeerDataOperationRequestMessage {
@@ -1902,6 +1906,7 @@ message Message {
         optional AICommon.AIMediaCollectionMessage aiMediaCollectionMessage = 28;
         optional uint32 afterReadDuration = 29;
         optional Message.ChatThemeSetting chatThemeSetting = 30;
+        optional AICommon.AIMetadataOperation aiMetadataOperation = 31;
         enum Type {
             REVOKE = 0;
             EPHEMERAL_SETTING = 3;
@@ -1932,6 +1937,7 @@ message Message {
             AI_MEDIA_COLLECTION_MESSAGE = 31;
             MESSAGE_UNSCHEDULE = 32;
             CHAT_THEME_SETTING = 34;
+            AI_METADATA_OPERATION = 35;
         }
     }
     message QuestionResponseMessage {

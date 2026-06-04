@@ -7476,6 +7476,7 @@ $root.AICommon = (function() {
          * @property {AICommon.IBotCommandMetadata|null} [commandMetadata] BotMetadata commandMetadata
          * @property {AICommon.IBotResolvedToolCallMetadata|null} [resolvedToolCallMetadata] BotMetadata resolvedToolCallMetadata
          * @property {AICommon.IAISubscriptionUpsellMetadata|null} [subscriptionUpsellMetadata] BotMetadata subscriptionUpsellMetadata
+         * @property {AICommon.IBotPttPromptMetadata|null} [pttPromptMetadata] BotMetadata pttPromptMetadata
          * @property {Uint8Array|null} [internalMetadata] BotMetadata internalMetadata
          */
 
@@ -7815,6 +7816,14 @@ $root.AICommon = (function() {
         BotMetadata.prototype.subscriptionUpsellMetadata = null;
 
         /**
+         * BotMetadata pttPromptMetadata.
+         * @member {AICommon.IBotPttPromptMetadata|null|undefined} pttPromptMetadata
+         * @memberof AICommon.BotMetadata
+         * @instance
+         */
+        BotMetadata.prototype.pttPromptMetadata = null;
+
+        /**
          * BotMetadata internalMetadata.
          * @member {Uint8Array|null|undefined} internalMetadata
          * @memberof AICommon.BotMetadata
@@ -8066,6 +8075,12 @@ $root.AICommon = (function() {
         });
 
         // Virtual OneOf for proto3 optional field
+        Object.defineProperty(BotMetadata.prototype, "_pttPromptMetadata", {
+            get: $util.oneOfGetter($oneOfFields = ["pttPromptMetadata"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
+
+        // Virtual OneOf for proto3 optional field
         Object.defineProperty(BotMetadata.prototype, "_internalMetadata", {
             get: $util.oneOfGetter($oneOfFields = ["internalMetadata"]),
             set: $util.oneOfSetter($oneOfFields)
@@ -8175,6 +8190,8 @@ $root.AICommon = (function() {
                 $root.AICommon.BotResolvedToolCallMetadata.encode(message.resolvedToolCallMetadata, writer.uint32(/* id 40, wireType 2 =*/322).fork()).ldelim();
             if (message.subscriptionUpsellMetadata != null && Object.hasOwnProperty.call(message, "subscriptionUpsellMetadata"))
                 $root.AICommon.AISubscriptionUpsellMetadata.encode(message.subscriptionUpsellMetadata, writer.uint32(/* id 41, wireType 2 =*/330).fork()).ldelim();
+            if (message.pttPromptMetadata != null && Object.hasOwnProperty.call(message, "pttPromptMetadata"))
+                $root.AICommon.BotPttPromptMetadata.encode(message.pttPromptMetadata, writer.uint32(/* id 42, wireType 2 =*/338).fork()).ldelim();
             if (message.internalMetadata != null && Object.hasOwnProperty.call(message, "internalMetadata"))
                 writer.uint32(/* id 999, wireType 2 =*/7994).bytes(message.internalMetadata);
             return writer;
@@ -8371,6 +8388,10 @@ $root.AICommon = (function() {
                     }
                 case 41: {
                         message.subscriptionUpsellMetadata = $root.AICommon.AISubscriptionUpsellMetadata.decode(reader, reader.uint32());
+                        break;
+                    }
+                case 42: {
+                        message.pttPromptMetadata = $root.AICommon.BotPttPromptMetadata.decode(reader, reader.uint32());
                         break;
                     }
                 case 999: {
@@ -8712,6 +8733,14 @@ $root.AICommon = (function() {
                         return "subscriptionUpsellMetadata." + error;
                 }
             }
+            if (message.pttPromptMetadata != null && message.hasOwnProperty("pttPromptMetadata")) {
+                properties._pttPromptMetadata = 1;
+                {
+                    var error = $root.AICommon.BotPttPromptMetadata.verify(message.pttPromptMetadata);
+                    if (error)
+                        return "pttPromptMetadata." + error;
+                }
+            }
             if (message.internalMetadata != null && message.hasOwnProperty("internalMetadata")) {
                 properties._internalMetadata = 1;
                 if (!(message.internalMetadata && typeof message.internalMetadata.length === "number" || $util.isString(message.internalMetadata)))
@@ -8913,6 +8942,11 @@ $root.AICommon = (function() {
                 if (typeof object.subscriptionUpsellMetadata !== "object")
                     throw TypeError(".AICommon.BotMetadata.subscriptionUpsellMetadata: object expected");
                 message.subscriptionUpsellMetadata = $root.AICommon.AISubscriptionUpsellMetadata.fromObject(object.subscriptionUpsellMetadata);
+            }
+            if (object.pttPromptMetadata != null) {
+                if (typeof object.pttPromptMetadata !== "object")
+                    throw TypeError(".AICommon.BotMetadata.pttPromptMetadata: object expected");
+                message.pttPromptMetadata = $root.AICommon.BotPttPromptMetadata.fromObject(object.pttPromptMetadata);
             }
             if (object.internalMetadata != null)
                 if (typeof object.internalMetadata === "string")
@@ -9135,6 +9169,11 @@ $root.AICommon = (function() {
                 if (options.oneofs)
                     object._subscriptionUpsellMetadata = "subscriptionUpsellMetadata";
             }
+            if (message.pttPromptMetadata != null && message.hasOwnProperty("pttPromptMetadata")) {
+                object.pttPromptMetadata = $root.AICommon.BotPttPromptMetadata.toObject(message.pttPromptMetadata, options);
+                if (options.oneofs)
+                    object._pttPromptMetadata = "pttPromptMetadata";
+            }
             if (message.internalMetadata != null && message.hasOwnProperty("internalMetadata")) {
                 object.internalMetadata = options.bytes === String ? $util.base64.encode(message.internalMetadata, 0, message.internalMetadata.length) : options.bytes === Array ? Array.prototype.slice.call(message.internalMetadata) : message.internalMetadata;
                 if (options.oneofs)
@@ -9170,6 +9209,224 @@ $root.AICommon = (function() {
         };
 
         return BotMetadata;
+    })();
+
+    AICommon.BotPttPromptMetadata = (function() {
+
+        /**
+         * Properties of a BotPttPromptMetadata.
+         * @memberof AICommon
+         * @interface IBotPttPromptMetadata
+         * @property {string|null} [transcript] BotPttPromptMetadata transcript
+         */
+
+        /**
+         * Constructs a new BotPttPromptMetadata.
+         * @memberof AICommon
+         * @classdesc Represents a BotPttPromptMetadata.
+         * @implements IBotPttPromptMetadata
+         * @constructor
+         * @param {AICommon.IBotPttPromptMetadata=} [properties] Properties to set
+         */
+        function BotPttPromptMetadata(properties) {
+            if (properties)
+                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * BotPttPromptMetadata transcript.
+         * @member {string|null|undefined} transcript
+         * @memberof AICommon.BotPttPromptMetadata
+         * @instance
+         */
+        BotPttPromptMetadata.prototype.transcript = null;
+
+        // OneOf field names bound to virtual getters and setters
+        var $oneOfFields;
+
+        // Virtual OneOf for proto3 optional field
+        Object.defineProperty(BotPttPromptMetadata.prototype, "_transcript", {
+            get: $util.oneOfGetter($oneOfFields = ["transcript"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
+
+        /**
+         * Creates a new BotPttPromptMetadata instance using the specified properties.
+         * @function create
+         * @memberof AICommon.BotPttPromptMetadata
+         * @static
+         * @param {AICommon.IBotPttPromptMetadata=} [properties] Properties to set
+         * @returns {AICommon.BotPttPromptMetadata} BotPttPromptMetadata instance
+         */
+        BotPttPromptMetadata.create = function create(properties) {
+            return new BotPttPromptMetadata(properties);
+        };
+
+        /**
+         * Encodes the specified BotPttPromptMetadata message. Does not implicitly {@link AICommon.BotPttPromptMetadata.verify|verify} messages.
+         * @function encode
+         * @memberof AICommon.BotPttPromptMetadata
+         * @static
+         * @param {AICommon.IBotPttPromptMetadata} message BotPttPromptMetadata message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        BotPttPromptMetadata.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.transcript != null && Object.hasOwnProperty.call(message, "transcript"))
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.transcript);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified BotPttPromptMetadata message, length delimited. Does not implicitly {@link AICommon.BotPttPromptMetadata.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof AICommon.BotPttPromptMetadata
+         * @static
+         * @param {AICommon.IBotPttPromptMetadata} message BotPttPromptMetadata message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        BotPttPromptMetadata.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a BotPttPromptMetadata message from the specified reader or buffer.
+         * @function decode
+         * @memberof AICommon.BotPttPromptMetadata
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {AICommon.BotPttPromptMetadata} BotPttPromptMetadata
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        BotPttPromptMetadata.decode = function decode(reader, length, error) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.AICommon.BotPttPromptMetadata();
+            while (reader.pos < end) {
+                var tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        message.transcript = reader.string();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a BotPttPromptMetadata message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof AICommon.BotPttPromptMetadata
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {AICommon.BotPttPromptMetadata} BotPttPromptMetadata
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        BotPttPromptMetadata.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a BotPttPromptMetadata message.
+         * @function verify
+         * @memberof AICommon.BotPttPromptMetadata
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        BotPttPromptMetadata.verify = function verify(message) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            var properties = {};
+            if (message.transcript != null && message.hasOwnProperty("transcript")) {
+                properties._transcript = 1;
+                if (!$util.isString(message.transcript))
+                    return "transcript: string expected";
+            }
+            return null;
+        };
+
+        /**
+         * Creates a BotPttPromptMetadata message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof AICommon.BotPttPromptMetadata
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {AICommon.BotPttPromptMetadata} BotPttPromptMetadata
+         */
+        BotPttPromptMetadata.fromObject = function fromObject(object) {
+            if (object instanceof $root.AICommon.BotPttPromptMetadata)
+                return object;
+            var message = new $root.AICommon.BotPttPromptMetadata();
+            if (object.transcript != null)
+                message.transcript = String(object.transcript);
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a BotPttPromptMetadata message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof AICommon.BotPttPromptMetadata
+         * @static
+         * @param {AICommon.BotPttPromptMetadata} message BotPttPromptMetadata
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        BotPttPromptMetadata.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            var object = {};
+            if (message.transcript != null && message.hasOwnProperty("transcript")) {
+                object.transcript = message.transcript;
+                if (options.oneofs)
+                    object._transcript = "transcript";
+            }
+            return object;
+        };
+
+        /**
+         * Converts this BotPttPromptMetadata to JSON.
+         * @function toJSON
+         * @memberof AICommon.BotPttPromptMetadata
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        BotPttPromptMetadata.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for BotPttPromptMetadata
+         * @function getTypeUrl
+         * @memberof AICommon.BotPttPromptMetadata
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        BotPttPromptMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/AICommon.BotPttPromptMetadata";
+        };
+
+        return BotPttPromptMetadata;
     })();
 
     AICommon.BotResolvedToolCallMetadata = (function() {
@@ -9705,6 +9962,527 @@ $root.AICommon = (function() {
         };
 
         return BotCommandMetadata;
+    })();
+
+    AICommon.AIMetadataOperation = (function() {
+
+        /**
+         * Properties of a AIMetadataOperation.
+         * @memberof AICommon
+         * @interface IAIMetadataOperation
+         * @property {AICommon.IHatchMetadataSync|null} [hatchMetadataSync] AIMetadataOperation hatchMetadataSync
+         */
+
+        /**
+         * Constructs a new AIMetadataOperation.
+         * @memberof AICommon
+         * @classdesc Represents a AIMetadataOperation.
+         * @implements IAIMetadataOperation
+         * @constructor
+         * @param {AICommon.IAIMetadataOperation=} [properties] Properties to set
+         */
+        function AIMetadataOperation(properties) {
+            if (properties)
+                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * AIMetadataOperation hatchMetadataSync.
+         * @member {AICommon.IHatchMetadataSync|null|undefined} hatchMetadataSync
+         * @memberof AICommon.AIMetadataOperation
+         * @instance
+         */
+        AIMetadataOperation.prototype.hatchMetadataSync = null;
+
+        // OneOf field names bound to virtual getters and setters
+        var $oneOfFields;
+
+        // Virtual OneOf for proto3 optional field
+        Object.defineProperty(AIMetadataOperation.prototype, "_hatchMetadataSync", {
+            get: $util.oneOfGetter($oneOfFields = ["hatchMetadataSync"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
+
+        /**
+         * Creates a new AIMetadataOperation instance using the specified properties.
+         * @function create
+         * @memberof AICommon.AIMetadataOperation
+         * @static
+         * @param {AICommon.IAIMetadataOperation=} [properties] Properties to set
+         * @returns {AICommon.AIMetadataOperation} AIMetadataOperation instance
+         */
+        AIMetadataOperation.create = function create(properties) {
+            return new AIMetadataOperation(properties);
+        };
+
+        /**
+         * Encodes the specified AIMetadataOperation message. Does not implicitly {@link AICommon.AIMetadataOperation.verify|verify} messages.
+         * @function encode
+         * @memberof AICommon.AIMetadataOperation
+         * @static
+         * @param {AICommon.IAIMetadataOperation} message AIMetadataOperation message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        AIMetadataOperation.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.hatchMetadataSync != null && Object.hasOwnProperty.call(message, "hatchMetadataSync"))
+                $root.AICommon.HatchMetadataSync.encode(message.hatchMetadataSync, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+            return writer;
+        };
+
+        /**
+         * Encodes the specified AIMetadataOperation message, length delimited. Does not implicitly {@link AICommon.AIMetadataOperation.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof AICommon.AIMetadataOperation
+         * @static
+         * @param {AICommon.IAIMetadataOperation} message AIMetadataOperation message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        AIMetadataOperation.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a AIMetadataOperation message from the specified reader or buffer.
+         * @function decode
+         * @memberof AICommon.AIMetadataOperation
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {AICommon.AIMetadataOperation} AIMetadataOperation
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        AIMetadataOperation.decode = function decode(reader, length, error) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.AICommon.AIMetadataOperation();
+            while (reader.pos < end) {
+                var tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        message.hatchMetadataSync = $root.AICommon.HatchMetadataSync.decode(reader, reader.uint32());
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a AIMetadataOperation message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof AICommon.AIMetadataOperation
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {AICommon.AIMetadataOperation} AIMetadataOperation
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        AIMetadataOperation.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a AIMetadataOperation message.
+         * @function verify
+         * @memberof AICommon.AIMetadataOperation
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        AIMetadataOperation.verify = function verify(message) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            var properties = {};
+            if (message.hatchMetadataSync != null && message.hasOwnProperty("hatchMetadataSync")) {
+                properties._hatchMetadataSync = 1;
+                {
+                    var error = $root.AICommon.HatchMetadataSync.verify(message.hatchMetadataSync);
+                    if (error)
+                        return "hatchMetadataSync." + error;
+                }
+            }
+            return null;
+        };
+
+        /**
+         * Creates a AIMetadataOperation message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof AICommon.AIMetadataOperation
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {AICommon.AIMetadataOperation} AIMetadataOperation
+         */
+        AIMetadataOperation.fromObject = function fromObject(object) {
+            if (object instanceof $root.AICommon.AIMetadataOperation)
+                return object;
+            var message = new $root.AICommon.AIMetadataOperation();
+            if (object.hatchMetadataSync != null) {
+                if (typeof object.hatchMetadataSync !== "object")
+                    throw TypeError(".AICommon.AIMetadataOperation.hatchMetadataSync: object expected");
+                message.hatchMetadataSync = $root.AICommon.HatchMetadataSync.fromObject(object.hatchMetadataSync);
+            }
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a AIMetadataOperation message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof AICommon.AIMetadataOperation
+         * @static
+         * @param {AICommon.AIMetadataOperation} message AIMetadataOperation
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        AIMetadataOperation.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            var object = {};
+            if (message.hatchMetadataSync != null && message.hasOwnProperty("hatchMetadataSync")) {
+                object.hatchMetadataSync = $root.AICommon.HatchMetadataSync.toObject(message.hatchMetadataSync, options);
+                if (options.oneofs)
+                    object._hatchMetadataSync = "hatchMetadataSync";
+            }
+            return object;
+        };
+
+        /**
+         * Converts this AIMetadataOperation to JSON.
+         * @function toJSON
+         * @memberof AICommon.AIMetadataOperation
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        AIMetadataOperation.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for AIMetadataOperation
+         * @function getTypeUrl
+         * @memberof AICommon.AIMetadataOperation
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        AIMetadataOperation.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/AICommon.AIMetadataOperation";
+        };
+
+        return AIMetadataOperation;
+    })();
+
+    AICommon.HatchMetadataSync = (function() {
+
+        /**
+         * Properties of a HatchMetadataSync.
+         * @memberof AICommon
+         * @interface IHatchMetadataSync
+         * @property {Uint8Array|null} [data] HatchMetadataSync data
+         * @property {number|Long|null} [timestampMs] HatchMetadataSync timestampMs
+         * @property {string|null} [requestId] HatchMetadataSync requestId
+         */
+
+        /**
+         * Constructs a new HatchMetadataSync.
+         * @memberof AICommon
+         * @classdesc Represents a HatchMetadataSync.
+         * @implements IHatchMetadataSync
+         * @constructor
+         * @param {AICommon.IHatchMetadataSync=} [properties] Properties to set
+         */
+        function HatchMetadataSync(properties) {
+            if (properties)
+                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * HatchMetadataSync data.
+         * @member {Uint8Array|null|undefined} data
+         * @memberof AICommon.HatchMetadataSync
+         * @instance
+         */
+        HatchMetadataSync.prototype.data = null;
+
+        /**
+         * HatchMetadataSync timestampMs.
+         * @member {number|Long|null|undefined} timestampMs
+         * @memberof AICommon.HatchMetadataSync
+         * @instance
+         */
+        HatchMetadataSync.prototype.timestampMs = null;
+
+        /**
+         * HatchMetadataSync requestId.
+         * @member {string|null|undefined} requestId
+         * @memberof AICommon.HatchMetadataSync
+         * @instance
+         */
+        HatchMetadataSync.prototype.requestId = null;
+
+        // OneOf field names bound to virtual getters and setters
+        var $oneOfFields;
+
+        // Virtual OneOf for proto3 optional field
+        Object.defineProperty(HatchMetadataSync.prototype, "_data", {
+            get: $util.oneOfGetter($oneOfFields = ["data"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
+
+        // Virtual OneOf for proto3 optional field
+        Object.defineProperty(HatchMetadataSync.prototype, "_timestampMs", {
+            get: $util.oneOfGetter($oneOfFields = ["timestampMs"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
+
+        // Virtual OneOf for proto3 optional field
+        Object.defineProperty(HatchMetadataSync.prototype, "_requestId", {
+            get: $util.oneOfGetter($oneOfFields = ["requestId"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
+
+        /**
+         * Creates a new HatchMetadataSync instance using the specified properties.
+         * @function create
+         * @memberof AICommon.HatchMetadataSync
+         * @static
+         * @param {AICommon.IHatchMetadataSync=} [properties] Properties to set
+         * @returns {AICommon.HatchMetadataSync} HatchMetadataSync instance
+         */
+        HatchMetadataSync.create = function create(properties) {
+            return new HatchMetadataSync(properties);
+        };
+
+        /**
+         * Encodes the specified HatchMetadataSync message. Does not implicitly {@link AICommon.HatchMetadataSync.verify|verify} messages.
+         * @function encode
+         * @memberof AICommon.HatchMetadataSync
+         * @static
+         * @param {AICommon.IHatchMetadataSync} message HatchMetadataSync message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        HatchMetadataSync.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.data != null && Object.hasOwnProperty.call(message, "data"))
+                writer.uint32(/* id 1, wireType 2 =*/10).bytes(message.data);
+            if (message.timestampMs != null && Object.hasOwnProperty.call(message, "timestampMs"))
+                writer.uint32(/* id 2, wireType 0 =*/16).int64(message.timestampMs);
+            if (message.requestId != null && Object.hasOwnProperty.call(message, "requestId"))
+                writer.uint32(/* id 3, wireType 2 =*/26).string(message.requestId);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified HatchMetadataSync message, length delimited. Does not implicitly {@link AICommon.HatchMetadataSync.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof AICommon.HatchMetadataSync
+         * @static
+         * @param {AICommon.IHatchMetadataSync} message HatchMetadataSync message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        HatchMetadataSync.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a HatchMetadataSync message from the specified reader or buffer.
+         * @function decode
+         * @memberof AICommon.HatchMetadataSync
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {AICommon.HatchMetadataSync} HatchMetadataSync
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        HatchMetadataSync.decode = function decode(reader, length, error) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.AICommon.HatchMetadataSync();
+            while (reader.pos < end) {
+                var tag = reader.uint32();
+                if (tag === error)
+                    break;
+                switch (tag >>> 3) {
+                case 1: {
+                        message.data = reader.bytes();
+                        break;
+                    }
+                case 2: {
+                        message.timestampMs = reader.int64();
+                        break;
+                    }
+                case 3: {
+                        message.requestId = reader.string();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a HatchMetadataSync message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof AICommon.HatchMetadataSync
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {AICommon.HatchMetadataSync} HatchMetadataSync
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        HatchMetadataSync.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a HatchMetadataSync message.
+         * @function verify
+         * @memberof AICommon.HatchMetadataSync
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        HatchMetadataSync.verify = function verify(message) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            var properties = {};
+            if (message.data != null && message.hasOwnProperty("data")) {
+                properties._data = 1;
+                if (!(message.data && typeof message.data.length === "number" || $util.isString(message.data)))
+                    return "data: buffer expected";
+            }
+            if (message.timestampMs != null && message.hasOwnProperty("timestampMs")) {
+                properties._timestampMs = 1;
+                if (!$util.isInteger(message.timestampMs) && !(message.timestampMs && $util.isInteger(message.timestampMs.low) && $util.isInteger(message.timestampMs.high)))
+                    return "timestampMs: integer|Long expected";
+            }
+            if (message.requestId != null && message.hasOwnProperty("requestId")) {
+                properties._requestId = 1;
+                if (!$util.isString(message.requestId))
+                    return "requestId: string expected";
+            }
+            return null;
+        };
+
+        /**
+         * Creates a HatchMetadataSync message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof AICommon.HatchMetadataSync
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {AICommon.HatchMetadataSync} HatchMetadataSync
+         */
+        HatchMetadataSync.fromObject = function fromObject(object) {
+            if (object instanceof $root.AICommon.HatchMetadataSync)
+                return object;
+            var message = new $root.AICommon.HatchMetadataSync();
+            if (object.data != null)
+                if (typeof object.data === "string")
+                    $util.base64.decode(object.data, message.data = $util.newBuffer($util.base64.length(object.data)), 0);
+                else if (object.data.length >= 0)
+                    message.data = object.data;
+            if (object.timestampMs != null)
+                if ($util.Long)
+                    (message.timestampMs = $util.Long.fromValue(object.timestampMs)).unsigned = false;
+                else if (typeof object.timestampMs === "string")
+                    message.timestampMs = parseInt(object.timestampMs, 10);
+                else if (typeof object.timestampMs === "number")
+                    message.timestampMs = object.timestampMs;
+                else if (typeof object.timestampMs === "object")
+                    message.timestampMs = new $util.LongBits(object.timestampMs.low >>> 0, object.timestampMs.high >>> 0).toNumber();
+            if (object.requestId != null)
+                message.requestId = String(object.requestId);
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a HatchMetadataSync message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof AICommon.HatchMetadataSync
+         * @static
+         * @param {AICommon.HatchMetadataSync} message HatchMetadataSync
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        HatchMetadataSync.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            var object = {};
+            if (message.data != null && message.hasOwnProperty("data")) {
+                object.data = options.bytes === String ? $util.base64.encode(message.data, 0, message.data.length) : options.bytes === Array ? Array.prototype.slice.call(message.data) : message.data;
+                if (options.oneofs)
+                    object._data = "data";
+            }
+            if (message.timestampMs != null && message.hasOwnProperty("timestampMs")) {
+                if (typeof message.timestampMs === "number")
+                    object.timestampMs = options.longs === String ? String(message.timestampMs) : message.timestampMs;
+                else
+                    object.timestampMs = options.longs === String ? $util.Long.prototype.toString.call(message.timestampMs) : options.longs === Number ? new $util.LongBits(message.timestampMs.low >>> 0, message.timestampMs.high >>> 0).toNumber() : message.timestampMs;
+                if (options.oneofs)
+                    object._timestampMs = "timestampMs";
+            }
+            if (message.requestId != null && message.hasOwnProperty("requestId")) {
+                object.requestId = message.requestId;
+                if (options.oneofs)
+                    object._requestId = "requestId";
+            }
+            return object;
+        };
+
+        /**
+         * Converts this HatchMetadataSync to JSON.
+         * @function toJSON
+         * @memberof AICommon.HatchMetadataSync
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        HatchMetadataSync.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for HatchMetadataSync
+         * @function getTypeUrl
+         * @memberof AICommon.HatchMetadataSync
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        HatchMetadataSync.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/AICommon.HatchMetadataSync";
+        };
+
+        return HatchMetadataSync;
     })();
 
     AICommon.AIMediaCollectionMessage = (function() {
@@ -16336,6 +17114,10 @@ $root.AICommon = (function() {
                     case 59:
                     case 60:
                     case 61:
+                    case 62:
+                    case 63:
+                    case 64:
+                    case 65:
                         break;
                     }
             }
@@ -16613,6 +17395,22 @@ $root.AICommon = (function() {
                     case 61:
                         message.capabilities[i] = 61;
                         break;
+                    case "UNIFIED_RESPONSE_AI_CONTENT_SEARCH_ENABLED":
+                    case 62:
+                        message.capabilities[i] = 62;
+                        break;
+                    case "UNIFIED_RESPONSE_MARKDOWN_LINKS_ENABLED":
+                    case 63:
+                        message.capabilities[i] = 63;
+                        break;
+                    case "AI_RICH_RESPONSE_MAPS_V2_ENABLED":
+                    case 64:
+                        message.capabilities[i] = 64;
+                        break;
+                    case "AI_SUBSCRIPTION_METERING_ENABLED":
+                    case 65:
+                        message.capabilities[i] = 65;
+                        break;
                     }
             }
             return message;
@@ -16733,6 +17531,10 @@ $root.AICommon = (function() {
          * @property {number} AI_TAB_FORCE_CLIPPY=59 AI_TAB_FORCE_CLIPPY value
          * @property {number} UNIFIED_RESPONSE_EMBEDDED_SCREENS=60 UNIFIED_RESPONSE_EMBEDDED_SCREENS value
          * @property {number} AI_SUBSCRIPTION_ENABLED=61 AI_SUBSCRIPTION_ENABLED value
+         * @property {number} UNIFIED_RESPONSE_AI_CONTENT_SEARCH_ENABLED=62 UNIFIED_RESPONSE_AI_CONTENT_SEARCH_ENABLED value
+         * @property {number} UNIFIED_RESPONSE_MARKDOWN_LINKS_ENABLED=63 UNIFIED_RESPONSE_MARKDOWN_LINKS_ENABLED value
+         * @property {number} AI_RICH_RESPONSE_MAPS_V2_ENABLED=64 AI_RICH_RESPONSE_MAPS_V2_ENABLED value
+         * @property {number} AI_SUBSCRIPTION_METERING_ENABLED=65 AI_SUBSCRIPTION_METERING_ENABLED value
          */
         BotCapabilityMetadata.BotCapabilityType = (function() {
             var valuesById = {}, values = Object.create(valuesById);
@@ -16798,6 +17600,10 @@ $root.AICommon = (function() {
             values[valuesById[59] = "AI_TAB_FORCE_CLIPPY"] = 59;
             values[valuesById[60] = "UNIFIED_RESPONSE_EMBEDDED_SCREENS"] = 60;
             values[valuesById[61] = "AI_SUBSCRIPTION_ENABLED"] = 61;
+            values[valuesById[62] = "UNIFIED_RESPONSE_AI_CONTENT_SEARCH_ENABLED"] = 62;
+            values[valuesById[63] = "UNIFIED_RESPONSE_MARKDOWN_LINKS_ENABLED"] = 63;
+            values[valuesById[64] = "AI_RICH_RESPONSE_MAPS_V2_ENABLED"] = 64;
+            values[valuesById[65] = "AI_SUBSCRIPTION_METERING_ENABLED"] = 65;
             return values;
         })();
 
