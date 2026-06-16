@@ -40,7 +40,7 @@ export interface LatexExpression {
 
 export declare const tokenizeCode: (code: string, language?: string) => CodeBlockToken[]
 
-export declare const buildRichContextInfo: (quoted?: any) => proto.IContextInfo | undefined
+export declare const buildRichContextInfo: (quoted?: any, options?: { botJid?: string, mentions?: string[] }) => proto.IContextInfo | undefined
 
 export declare const buildBotForwardedMessage: (
     submessages: any[],
@@ -101,5 +101,6 @@ export declare const generateUnifiedResponseContent: (
 
 export declare const generateRichMessageContent: (
     submessages: any[],
-    quoted?: any
+    quoted?: any,
+    options?: { botJid?: string, mentions?: string[] }
 ) => { message: proto.IMessage, messageId: string }
