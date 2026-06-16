@@ -103,7 +103,6 @@ import makeWASocket from '@innovatorssoft/baileys'
         - [sendTable](#sendtable)
         - [sendList](#sendlist)
         - [sendCodeBlock](#sendcodeblock)
-        - [sendLatex](#sendlatex)
         - [sendLatexImage](#sendlateximage)
         - [sendLatexInlineImage](#sendlatexinlineimage)
         - [sendRichMessage](#sendrichmessage)
@@ -2165,71 +2164,70 @@ Supported languages: `javascript` (default), `typescript`, `js`, `ts`, `python`,
 
 ---
 
-### sendLatex
-
-Send LaTeX expressions as text (no image rendering — fastest option):
-
-```js
-await sock.sendLatex(
-    jid,
-    null,  // quoted
-    {
-        text: 'Quadratic formula:',
-        expressions: [
-            { latexExpression: 'x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}', url: '', width: 0, height: 0 }
-        ]
-    }
-)
-```
-
----
-
 ### sendLatexImage
 
-Render LaTeX expressions to PNG images, upload, and send. You must supply a `renderLatexToPng` function and an `uploadFn`:
+Render a LaTeX expression to a PNG image using the online CodeCogs API, upload, and send.
+
+Parameters:
+- `jid`: JID of the user/group
+- `quoted`: Quoted message (optional)
+- `options`: LaTeX string OR options object:
+  - `formula` / `latex` / `text` / `expressions`: LaTeX expression(s) to render. If not found, defaults to `E=mc^2`.
+  - `caption`: Optional caption to show underneath the image. If omitted, no caption is sent.
 
 ```js
-await sock.sendLatexImage(
-    jid,
-    null,
-    {
-        text: 'Euler\'s Identity:',
-        expressions: [
-            { latexExpression: 'e^{i\\pi} + 1 = 0' }
-        ]
-    },
-    async (latexExpr) => {
-        // Return { buffer: Buffer, width: number, height: number }
-        const { buffer, info } = await sharp(await renderLatex(latexExpr)).toBuffer({ resolveWithObject: true })
-        return { buffer, width: info.width, height: info.height }
-    },
-    async (buffer, type) => {
-        // Return { url: string } or { directPath: string }
-        return await uploadMediaToWhatsApp(buffer, type)
-    }
-)
+// Send a LaTeX expression as an image with no caption
+await sock.sendLatexImage(jid, null, 'E=mc^2')
+
+// Send a LaTeX expression with a custom caption
+await sock.sendLatexImage(jid, null, {
+    formula: 'E=mc^2',
+    caption: 'Mass-Energy Equivalence'
+})
 ```
 
 ---
 
 ### sendLatexInlineImage
 
-Same as `sendLatexImage`, but renders each expression as a separate inline image block:
+Render multiple LaTeX expressions as an album message.
+
+Parameters:
+- `jid`: JID of the user/group
+- `quoted`: Quoted message (optional)
+- `options`: LaTeX string OR options object:
+  - `expressions`: Array of LaTeX expressions (as strings or objects with a `latexExpression` property)
+  - `caption`:
+    - Set to `true` to use each LaTeX expression as the caption for its respective image in the album.
+    - Set to a `string` to use a single custom caption on the first image of the album.
+    - Omit or set to `false` for no captions.
 
 ```js
-await sock.sendLatexInlineImage(
-    jid,
-    null,
-    {
-        text: 'Maxwell\'s Equations:',
-        expressions: [
-            { latexExpression: '\\nabla \\cdot \\mathbf{E} = \\frac{\\rho}{\\varepsilon_0}' },
-            { latexExpression: '\\nabla \\times \\mathbf{B} = \\mu_0 \\mathbf{J} + \\mu_0\\varepsilon_0 \\frac{\\partial \\mathbf{E}}{\\partial t}' }
-        ]
-    },
-    renderLatexToPng,
-    uploadFn
-)
+// Send LaTeX images as an album without captions
+await sock.sendLatexInlineImage(jid, null, {
+    expressions: [
+        { latexExpression: '\\nabla \\cdot \\mathbf{E} = \\frac{\\rho}{\\varepsilon_0}' },
+        { latexExpression: '\\nabla \\times \\mathbf{B} = \\mu_0 \\mathbf{J} + \\mu_0\\varepsilon_0 \\frac{\\partial \\mathbf{E}}{\\partial t}' }
+    ]
+})
+
+// Send LaTeX images as an album with the formula strings as captions
+await sock.sendLatexInlineImage(jid, null, {
+    expressions: [
+        { latexExpression: '\\nabla \\cdot \\mathbf{E} = \\frac{\\rho}{\\varepsilon_0}' },
+        { latexExpression: '\\nabla \\times \\mathbf{B} = \\mu_0 \\mathbf{J} + \\mu_0\\varepsilon_0 \\frac{\\partial \\mathbf{E}}{\\partial t}' }
+    ],
+    caption: true
+})
+
+// Send LaTeX images as an album with a single overall custom caption
+await sock.sendLatexInlineImage(jid, null, {
+    expressions: [
+        { latexExpression: '\\nabla \\cdot \\mathbf{E} = \\frac{\\rho}{\\varepsilon_0}' },
+        { latexExpression: '\\nabla \\times \\mathbf{B} = \\mu_0 \\mathbf{J} + \\mu_0\\varepsilon_0 \\frac{\\partial \\mathbf{E}}{\\partial t}' }
+    ],
+    caption: 'Maxwell\'s Equations'
+})
 ```
 
 ---
