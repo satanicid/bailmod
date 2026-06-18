@@ -105,6 +105,7 @@ import makeWASocket from '@innovatorssoft/baileys'
         - [sendCodeBlock](#sendcodeblock)
         - [sendLatexImage](#sendlateximage)
         - [sendLatexInlineImage](#sendlatexinlineimage)
+        - [sendMarkdown](#sendmarkdown)
         - [sendRichMessage](#sendrichmessage)
         - [captureUnifiedResponse / sendUnifiedResponse](#captureunifiedresponse--sendunifiedresponse)
     - [Share Phone Number Message](#share-phone-number-message) 
@@ -2232,15 +2233,39 @@ await sock.sendLatexInlineImage(jid, null, {
 
 ---
 
+### sendMarkdown
+
+Send a rich markdown text message formatted natively via Meta AI primitives:
+
+```js
+await sock.sendMarkdown(
+    jid,
+    '# H1\n## H2\n==Highlighted==\n_Italics_ and **Bold**!',
+    null  // quoted message (or null)
+)
+```
+
+---
+
 ### sendRichMessage
 
-Send a fully custom rich message by assembling raw submessage objects:
+Send a fully custom rich message by assembling raw submessage objects. You can also pass `{ useMarkdown: true }` in the options to automatically convert standard submessages (`TEXT`, `TABLE`, `CODE`, `INLINE_IMAGE`) into WhatsApp's native `unifiedResponse` primitives (e.g. `GenAIMarkdownTextUXPrimitive`, `GenATableUXPrimitive`):
 
 ```js
 await sock.sendRichMessage(
     jid,
     [
-        { messageType: 2, messageText: '🤖 *AI Response*' },
+        { messageType: 2, messageText: '# 🤖 *AI Response*' },
+        {
+            messageType: 4,
+            tableMetadata: {
+                title: 'Prices',
+                rows: [
+                    { items: ['Item', 'Price'], isHeading: true },
+                    { items: ['Baileys Pro', '$49'] }
+                ]
+            }
+        },
         {
             messageType: 5,
             codeMetadata: {
@@ -2248,9 +2273,10 @@ await sock.sendRichMessage(
                 codeBlocks: [{ highlightType: 1, codeContent: 'print' }, { highlightType: 0, codeContent: '("Hello")' }]
             }
         },
-        { messageType: 2, messageText: '_Powered by Baileys_' }
+        { messageType: 2, messageText: '> _Powered by Baileys_' }
     ],
-    null  // quoted
+    null,  // quoted
+    { useMarkdown: true } // dynamically builds the unifiedResponse payload for native rendering
 )
 ```
 
