@@ -1,11 +1,18 @@
-const { makeWASocket, useMultiFileAuthState, DisconnectReason, Browsers, RichSubMessageType, captureUnifiedResponse, sendUnifiedResponse, encryptedStream, getUrlFromDirectPath, renderLatexToPng, uploadUnencryptedToWA } = require('./lib/index.js');
+const { makeWASocket,
+    useMultiFileAuthState,
+    DisconnectReason,
+    RichSubMessageType,
+    captureUnifiedResponse,
+    sendUnifiedResponse,
+    encryptedStream,
+    getUrlFromDirectPath,
+    renderLatexToPng,
+    uploadUnencryptedToWA }
+    = require('../../lib/index.js');
 const { Boom } = require('@hapi/boom');
 const qrcode = require('qrcode-terminal');
 const fs = require('fs');
 const path = require('path');
-const crypto = require('crypto');
-const os = require('os');
-
 
 async function startBot() {
     const authDir = path.join(__dirname, 'auth');
