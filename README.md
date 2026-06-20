@@ -3709,3 +3709,12 @@ await sock.sendMessage(jid, {
 - [Follow Innovators Soft](https://facebook.com/innovatorssoft)
 
 ---
+# Support the Project
+
+> **NOTE**
+>
+> **This project is completely free and open-source. If it saved you time or helped your business, consider supporting us!**
+
+[![Support on Patreon](https://img.shields.io/badge/Support-Patreon-FF424D?style=for-the-badge&logo=patreon&logoColor=white)](https://patreon.com/innovatorssoft7)
+
+---
