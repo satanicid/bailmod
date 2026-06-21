@@ -2611,12 +2611,56 @@ await sock.relayMessage(
 3. To enable this function's usage, add `link-preview-js` as a dependency to your project with `yarn add link-preview-js`
 4. Send a link:
 ```ts
-await sock.sendMessage(
-    jid,
-    {
-        text: 'Hi, this was sent using https://github.com/whiskeysockets/baileys'
-    }
-)
+// --- Send a text message with a link preview
+const urlA = 'https://github.com/innovatorssoft/baileys'
+
+sock.sendMessage(jid, {
+   text: urlA + ' 👆🏻 Check it out!',
+   linkPreview: {
+      'matched-text': urlA,
+      title: '🌱 @innovatorssoft/baileys',
+      description: 'Modified Baileys Fork',
+      previewType: 0, // --- Use 1 for video playback in the link preview
+      jpegThumbnail: fs.readFileSync('./path/to/image.jpg')
+   }
+})
+
+// --- Send a text message with a large link preview and favicon
+import { prepareWAMessageMedia } from '@innovatorssoft/baileys'
+
+const urlB = 'https://github.com/innovatorssoft/baileys#readme'
+
+const { imageMessage: image } = await prepareWAMessageMedia({
+   image: {
+      url: './path/to/image.jpg'
+   }
+}, {
+   upload: sock.waUploadToServer,
+   mediaTypeOverride: 'thumbnail-link'
+})
+
+// --- Set the thumbnail display size
+image.height = 720
+image.width = 480
+
+sock.sendMessage(jid, {
+   text: urlB + ' 👆🏻 Check it out!',
+   linkPreview: {
+      'matched-text': urlB,
+      title: '🌱 @innovatorssoft/baileys',
+      description: 'Modified Baileys Fork',
+      previewType: 0,
+      jpegThumbnail: fs.readFileSync('./path/to/image.jpg'),
+      highQualityThumbnail: image,
+      linkPreviewMetadata: {
+         linkMediaDuration: 0, // --- Duration in seconds (for video/audio content)
+         socialMediaPostType: 1, // --- Enum: 0 = NONE, 1 = REEL, 2 = LIVE_VIDEO, 3 = LONG_VIDEO, 4 = SINGLE_IMAGE, 5 = CAROUSEL
+      } // --- Additional metadata for large link preview
+   },
+   favicon: {
+      url: './path/to/tiny-image.ico'
+   }
+})
 ```
 
 ### Media Messages
