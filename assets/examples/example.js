@@ -7,6 +7,7 @@ const { makeWASocket,
     encryptedStream,
     getUrlFromDirectPath,
     renderLatexToPng,
+    prepareWAMessageMedia,
     uploadUnencryptedToWA }
     = require('../../lib/index.js');
 const { Boom } = require('@hapi/boom');
@@ -232,6 +233,7 @@ async function startBot() {
                         '!ai           - Send a message with Meta AI icon',
                         '!capture      - Capture a message text to buffer',
                         '!sendcaptured - Send all captured buffered messages',
+                        '!linkpreview  - Send a link with custom preview',
                         '!checkusername - Check if a username is available',
                         '!setusername  - Set your username',
                         '!deleteusername - Delete your current username',
@@ -434,6 +436,67 @@ async function startBot() {
                 case '!sendcaptured': {
                     await sock.sendMessage(normalizedJid, { text: 'Sending all captured responses...' }, { quoted: message });
                     await sendUnifiedResponse(sock.sendMessage.bind(sock));
+                    break;
+                }
+                case '!linkpreview': {
+                    try {
+                        const urlA = 'https://github.com/innovatorssoft/baileys';
+                        const logoPath = path.join(__dirname, 'logo.png');
+                        const faviconPath = path.join(__dirname, 'favicon.png');
+
+                        await sock.sendMessage(normalizedJid, { text: 'Sending standard link preview...' }, { quoted: message });
+
+                        // --- Send a text message with a link preview
+                        await sock.sendMessage(normalizedJid, {
+                            text: urlA + ' 👆🏻 Check it out!',
+                            linkPreview: {
+                                'matched-text': urlA,
+                                title: '🌱 @innovatorssoft/baileys',
+                                description: 'Modified Baileys Fork',
+                                previewType: 0, // --- Use 1 for video playback in the link preview
+                                jpegThumbnail: fs.readFileSync(logoPath)
+                            }
+                        }, { quoted: message });
+
+                        await sock.sendMessage(normalizedJid, { text: 'Sending large link preview with favicon...' }, { quoted: message });
+
+                        const urlB = 'https://github.com/innovatorssoft/baileys#readme';
+
+                        const { imageMessage: image } = await prepareWAMessageMedia({
+                            image: {
+                                url: logoPath
+                            }
+                        }, {
+                            upload: sock.waUploadToServer,
+                            mediaTypeOverride: 'thumbnail-link'
+                        });
+
+                        // --- Set the thumbnail display size
+                        image.height = 720;
+                        image.width = 480;
+
+                        await sock.sendMessage(normalizedJid, {
+                            text: urlB + ' 👆🏻 Check it out!',
+                            linkPreview: {
+                                'matched-text': urlB,
+                                title: '🌱 @innovatorssoft/baileys',
+                                description: 'Modified Baileys Fork',
+                                previewType: 0,
+                                jpegThumbnail: fs.readFileSync(logoPath),
+                                highQualityThumbnail: image,
+                                linkPreviewMetadata: {
+                                    linkMediaDuration: 0,
+                                    socialMediaPostType: 1, // --- Enum: 0 = NONE, 1 = REEL, 2 = LIVE_VIDEO, 3 = LONG_VIDEO, 4 = SINGLE_IMAGE, 5 = CAROUSEL
+                                }
+                            },
+                            favicon: {
+                                url: faviconPath
+                            }
+                        }, { quoted: message });
+
+                    } catch (err) {
+                        await sock.sendMessage(normalizedJid, { text: `Error sending link preview: ${err.message}` }, { quoted: message });
+                    }
                     break;
                 }
                 case '!checkusername': {
