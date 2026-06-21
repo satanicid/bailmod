@@ -518,8 +518,9 @@ async function startBot() {
                     const [uname, pin] = args.split(' ');
                     try {
                         const result = await sock.findUserByUsername(uname, pin);
-                        if (result?.contact) {
-                            await sock.sendMessage(normalizedJid, { text: `🔍 Found user!\nJID: ${result.jid}` }, { quoted: message });
+                        if (result) {
+                            const contactNote = result.contact ? ' (in your contacts)' : ' (not in your contacts)';
+                            await sock.sendMessage(normalizedJid, { text: `🔍 Found user${contactNote}!\nJID: ${result.jid}` }, { quoted: message });
                         } else {
                             await sock.sendMessage(normalizedJid, { text: `❌ User @${uname} not found or not on WhatsApp.` }, { quoted: message });
                         }
