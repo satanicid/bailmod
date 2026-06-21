@@ -28,4 +28,5 @@ export declare class USyncQuery {
     withStatusProtocol(): this
     withBotProfileProtocol(): this
     withDisappearingModeProtocol(): this
+    withUsernameProtocol(): this
 }

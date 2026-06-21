@@ -1,65 +1,7 @@
-import { UserFacingSocketConfig, ContactAction } from '../Types'
+import { SocketConfig } from '../Types'
+import { BinaryNode } from '../WABinary'
 
-declare const makeWASocket: (config: UserFacingSocketConfig) => {
-    logger: import("../Utils/logger").ILogger
-    getOrderDetails: (orderId: string, tokenBase64: string) => Promise<import("../Types").OrderDetails>
-    getCatalog: ({ jid, limit, cursor }: import("../Types").GetCatalogOptions) => Promise<{
-        products: import("../Types").Product[]
-        nextPageCursor: string | undefined
-    }>
-    getCollections: (jid?: string | undefined, limit?: number) => Promise<{
-        collections: import("../Types").CatalogCollection[]
-    }>
-    productCreate: (create: import("../Types").ProductCreate) => Promise<import("../Types").Product>
-    productDelete: (productIds: string[]) => Promise<{
-        deleted: number
-    }>
-    productUpdate: (productId: string, update: import("../Types").ProductUpdate) => Promise<import("../Types").Product>
-    updateBussinesProfile: (args: import("../Types").UpdateBussinesProfileProps) => Promise<any>
-    updateCoverPhoto: (photo: import("../Types").WAMediaUpload) => Promise<number>
-    removeCoverPhoto: (id: string) => Promise<any>
-    sendMessageAck: ({ tag, attrs, content }: import("..").BinaryNode, errorCode?: number | undefined) => Promise<void>
-    sendRetryRequest: (node: import("..").BinaryNode, forceIncludeKeys?: boolean) => Promise<void>
-    offerCall: (toJid: string, isVideo?: boolean) => Promise<{
-        id: any
-        to: string
-    }>
-    rejectCall: (callId: string, callFrom: string) => Promise<void>
-    fetchMessageHistory: (count: number, oldestMsgKey: import("../Types").WAProto.IMessageKey, oldestMsgTimestamp: number | import("long").Long) => Promise<string>
-    requestPlaceholderResend: (messageKey: import("../Types").WAProto.IMessageKey) => Promise<string | undefined>
-    getPrivacyTokens: (jids: string[]) => Promise<import("..").BinaryNode>
-    assertSessions: (jids: string[], force: boolean) => Promise<boolean>
-    relayMessage: (jid: string, message: import("../Types").WAProto.IMessage, { messageId: msgId, participant, additionalAttributes, additionalNodes, useUserDevicesCache, useCachedGroupMetadata, statusJidList }: import("../Types").MessageRelayOptions) => Promise<string>
-    sendReceipt: (jid: string, participant: string | undefined, messageIds: string[], type: import("../Types").MessageReceiptType) => Promise<void>
-    sendReceipts: (keys: import("../Types").WAProto.IMessageKey[], type: import("../Types").MessageReceiptType) => Promise<void>
-    readMessages: (keys: import("../Types").WAProto.IMessageKey[]) => Promise<void>
-    refreshMediaConn: (forceGet?: boolean) => Promise<import("../Types").MediaConnInfo>
-    waUploadToServer: import("../Types").WAMediaUploadFunction
-    fetchPrivacySettings: (force?: boolean) => Promise<{
-        [_: string]: string
-    }>
-    sendPeerDataOperationMessage: (pdoMessage: import("../Types").WAProto.Message.IPeerDataOperationRequestMessage) => Promise<string>
-    createParticipantNodes: (jids: string[], message: import("../Types").WAProto.IMessage, extraAttrs?: {
-        [key: string]: string
-    } | undefined) => Promise<{
-        nodes: import("..").BinaryNode[]
-        shouldIncludeDeviceIdentity: boolean
-    }>
-    profilePictureUrl: (jids: string) => Promise<string>
-    getUSyncDevices: (jids: string[], useCache: boolean, ignoreZeroDevices: boolean) => Promise<import("..").JidWithDevice[]>
-    getEphemeralGroup: (jid: string) => Promise<number>
-    updateMediaMessage: (message: import("../Types").WAProto.IWebMessageInfo) => Promise<import("../Types").WAProto.IWebMessageInfo>
-    sendStatusMentions: (content: import("../Types").WAProto.IMessage, jid: string, Private?: boolean) => Promise<string>
-    sendTable: (jid: string, title: string, headers: string[], rows: string[][], quoted?: any, options?: { headerText?: string, footer?: string }) => Promise<{ message: import("../Types").WAProto.IMessage, messageId: string }>
-    sendList: (jid: string, title: string, items: string[] | string[][], quoted?: any, options?: { headerText?: string, footer?: string }) => Promise<{ message: import("../Types").WAProto.IMessage, messageId: string }>
-    sendCodeBlock: (jid: string, code: string, quoted?: any, options?: { title?: string, footer?: string, language?: string }) => Promise<{ message: import("../Types").WAProto.IMessage, messageId: string }>
-    sendMarkdown: (jid: string, text: string, quoted?: any, options?: { botJid?: string, mentions?: string[] }) => Promise<{ message: import("../Types").WAProto.IMessage, messageId: string }>
-    sendLatexImage: (jid: string, quoted?: any, options?: string | { text?: string, expressions?: import("../Utils/message-composer").LatexExpression[], headerText?: string, footer?: string, caption?: string }, renderLatexToPng?: any, uploadFn?: any) => Promise<any>
-    sendLatexInlineImage: (jid: string, quoted?: any, options?: string | { text?: string, expressions?: import("../Utils/message-composer").LatexExpression[], headerText?: string, footer?: string }, renderLatexToPng?: any, uploadFn?: any) => Promise<any>
-    sendRichMessage: (jid: string, submessages: any[], quoted?: any, options?: { botJid?: string, mentions?: string[], useMarkdown?: boolean, unifiedResponse?: any }) => Promise<{ message: import("../Types").WAProto.IMessage, messageId: string }>
-    captureUnifiedResponse: (message: import("../Types").WAProto.IMessage) => { unifiedResponse: { data: Buffer }, submessages: any[], contextInfo: any } | null
-    sendUnifiedResponse: (jid: string, quoted: any, captured: { submessages: any[], unifiedResponse: { data: Buffer } }) => Promise<{ message: import("../Types").WAProto.IMessage, messageId: string }>
-    sendMessage: (jid: string, content: import("../Types").AnyMessageContent, options?: import("../Types").MiscMessageGenerationOptions) => Promise<import("../Types").WAProto.WebMessageInfo | undefined>
+export declare const makeUsernameSocket: (config: SocketConfig) => {
     checkUsername: (username: string, includeSuggestions?: boolean) => Promise<{
         available: boolean
         username: string
@@ -120,7 +62,7 @@ declare const makeWASocket: (config: UserFacingSocketConfig) => {
     newsletterWMexQuery: (jid?: string | undefined, query_id: number, content: BinaryNode) => Promise<BinaryNode>
     newsletterMetadata: (type: "invite" | "jid", key: string, role?: import("../Types").NewsletterViewRole | undefined) => Promise<import("../Types").NewsletterMetadata>
     newsletterFetchAllParticipating: () => Promise<{
-    	[_: string]: import("../Types").NewsletterMetadata
+        [_: string]: import("../Types").NewsletterMetadata
     }>
     newsletterAdminCount: (jid: string) => Promise<number>
     newsletterChangeOwner: (jid: string, userLid: string) => Promise<void>
@@ -144,14 +86,14 @@ declare const makeWASocket: (config: UserFacingSocketConfig) => {
     groupParticipantsUpdate: (jid: string, participants: string[], action: import("../Types").ParticipantAction) => Promise<{
         status: string
         jid: string
-        content: import("..").BinaryNode
+        content: BinaryNode
     }[]>
     groupUpdateDescription: (jid: string, description?: string | undefined) => Promise<void>
     groupInviteCode: (jid: string) => Promise<string | undefined>
     groupRevokeInvite: (jid: string) => Promise<string | undefined>
     groupAcceptInvite: (code: string) => Promise<string | undefined>
     groupRevokeInviteV4: (groupJid: string, invitedJid: string) => Promise<boolean>
-    groupAcceptInviteV4: (key: string | import("../Types").WAProto.IMessageKey, inviteMessage: import("../Types").WAProto.Message.IGroupInviteMessage) => Promise<string>
+    groupAcceptInviteV4: (key: string | import("../Types").WAMessageKey, inviteMessage: import("../Types").WAProto.Message.IGroupInviteMessage) => Promise<string>
     groupGetInviteInfo: (code: string) => Promise<import("../Types").GroupMetadata>
     groupToggleEphemeral: (jid: string, ephemeralExpiration: number) => Promise<void>
     groupSettingUpdate: (jid: string, setting: "announcement" | "locked" | "not_announcement" | "unlocked") => Promise<void>
@@ -163,19 +105,22 @@ declare const makeWASocket: (config: UserFacingSocketConfig) => {
     processingMutex: {
         mutex<T>(code: () => T | Promise<T>): Promise<T>
     }
+    fetchPrivacySettings: (force?: boolean) => Promise<{
+        [_: string]: string
+    }>
     upsertMessage: (msg: import("../Types").WAProto.IWebMessageInfo, type: import("../Types").MessageUpsertType) => Promise<void>
     appPatch: (patchCreate: import("../Types").WAPatchCreate) => Promise<void>
     createCallLink: (type: 'audio' | 'video', event?: number, timeoutMs?: number) => Promise<void>
     sendPresenceUpdate: (type: import("../Types").WAPresence, toJid?: string | undefined, options?: { simulateTyping?: boolean; typingDuration?: number }) => Promise<void>
-    presenceSubscribe: (toJid: string, tcToken?: Buffer | undefined) => Promise<void>    
-    getBotListV2: () => Promise<BotListInfo[]>
+    presenceSubscribe: (toJid: string, tcToken?: Buffer | undefined) => Promise<void>
+    getBotListV2: () => Promise<any>
     getLidUser: (jid: string) => Promise<{
-    	lid: string
+        lid: string
         id: string
     }[] | undefined>
     fetchBlocklist: () => Promise<string[]>
-    fetchStatus: (...jids: string[]) => Promise<import("..").USyncQueryResultList[] | undefined>
-    fetchDisappearingDuration: (...jids: string[]) => Promise<import("..").USyncQueryResultList[] | undefined>
+    fetchDisappearingDuration: (...jids: string[]) => Promise<import("../index").USyncQueryResultList[] | undefined>
+    fetchStatus: (...jids: string[]) => Promise<import("../index").USyncQueryResultList[] | undefined>
     updateProfilePicture: (jid: string, content: import("../Types").WAMediaUpload) => Promise<void>
     removeProfilePicture: (jid: string) => Promise<void>
     updateProfileStatus: (status: string) => Promise<void>
@@ -194,7 +139,6 @@ declare const makeWASocket: (config: UserFacingSocketConfig) => {
     resyncAppState: (collections: readonly ("critical_block" | "critical_unblock_low" | "regular_high" | "regular_low" | "regular")[], isInitialSync: boolean) => Promise<void>
     chatModify: (mod: import("../Types").ChatModification, jid: string) => Promise<void>
     cleanDirtyBits: (type: "account_sync" | "groups", fromTimestamp?: string | number | undefined) => Promise<void>
-    addLabel: (jid: string, labels: import("../Types/Label").LabelActionBody) => Promise<void>
     addChatLabel: (jid: string, labelId: string) => Promise<void>
     removeChatLabel: (jid: string, labelId: string) => Promise<void>
     addMessageLabel: (jid: string, messageId: string, labelId: string) => Promise<void>
@@ -206,11 +150,11 @@ declare const makeWASocket: (config: UserFacingSocketConfig) => {
     }[], star: boolean) => Promise<void>
     addOrEditQuickReply: (quickReply: import("../Types/Bussines").QuickReplyAction) => Promise<void>
     removeQuickReply: (timestamp: string) => Promise<void>
-    addOrEditContact: (jid: string, contact: ContactAction) => Promise<void>
+    addOrEditContact: (jid: string, contact: import("../Types").ContactAction) => Promise<void>
     removeContact: (jid: string) => Promise<void>
-    executeUSyncQuery: (usyncQuery: import("..").USyncQuery) => Promise<import("..").USyncQueryResult | undefined>
+    executeUSyncQuery: (usyncQuery: import("../index").USyncQuery) => Promise<import("../index").USyncQueryResult | undefined>
     type: "md"
-    ws: import("./Client").WebSocketClient
+    ws: any
     ev: import("../Types").BaileysEventEmitter & {
         process(handler: (events: Partial<import("../Types").BaileysEventMap>) => void | Promise<void>): () => void
         buffer(): void
@@ -225,11 +169,11 @@ declare const makeWASocket: (config: UserFacingSocketConfig) => {
     signalRepository: import("../Types").SignalRepository
     user: import("../Types").Contact | undefined
     generateMessageTag: () => string
-    query: (node: import("..").BinaryNode, timeoutMs?: number | undefined) => Promise<import("..").BinaryNode>
+    query: (node: BinaryNode, timeoutMs?: number | undefined) => Promise<BinaryNode>
     waitForMessage: <T_2>(msgId: string, timeoutMs?: number | undefined) => Promise<T_2>
     waitForSocketOpen: () => Promise<void>
     sendRawMessage: (data: Uint8Array | Buffer) => Promise<void>
-    sendNode: (frame: import("..").BinaryNode) => Promise<void>
+    sendNode: (frame: BinaryNode) => Promise<void>
     logout: (msg?: string | undefined) => Promise<void>
     end: (error: Error | undefined) => void
     onUnexpectedError: (err: Error | import("@hapi/boom").Boom<any>, msg: string) => void
@@ -237,7 +181,5 @@ declare const makeWASocket: (config: UserFacingSocketConfig) => {
     uploadPreKeysToServerIfRequired: () => Promise<void>
     requestPairingCode: (phoneNumber: string, code?: string) => Promise<string>
     waitForConnectionUpdate: (check: (u: Partial<import("../Types").ConnectionState>) => boolean | undefined, timeoutMs?: number | undefined) => Promise<void>
-    sendWAMBuffer: (wamBuffer: Buffer) => Promise<import("..").BinaryNode>
+    sendWAMBuffer: (wamBuffer: Buffer) => Promise<BinaryNode>
 }
-
-export default makeWASocket

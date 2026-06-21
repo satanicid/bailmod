@@ -231,7 +231,14 @@ async function startBot() {
                         '!request      - Request phone number',
                         '!ai           - Send a message with Meta AI icon',
                         '!capture      - Capture a message text to buffer',
-                        '!sendcaptured - Send all captured buffered messages'
+                        '!sendcaptured - Send all captured buffered messages',
+                        '!checkusername - Check if a username is available',
+                        '!setusername  - Set your username',
+                        '!deleteusername - Delete your current username',
+                        '!myusername   - Retrieve your current username',
+                        '!setpin       - Set or delete username PIN',
+                        '!findusername - Find a user JID by username',
+                        '!fetchusernames - Fetch usernames of JIDs'
                     ], message, {
                         headerText: 'Available commands:',
                         footer: 'Type any of these commands to test.'
@@ -427,6 +434,116 @@ async function startBot() {
                 case '!sendcaptured': {
                     await sock.sendMessage(normalizedJid, { text: 'Sending all captured responses...' }, { quoted: message });
                     await sendUnifiedResponse(sock.sendMessage.bind(sock));
+                    break;
+                }
+                case '!checkusername': {
+                    if (!args) {
+                        await sock.sendMessage(normalizedJid, { text: 'Usage: !checkusername <username>' }, { quoted: message });
+                        break;
+                    }
+                    try {
+                        const check = await sock.checkUsername(args);
+                        if (check.available) {
+                            await sock.sendMessage(normalizedJid, { text: `✅ @${check.username} is available!` }, { quoted: message });
+                        } else {
+                            let text = `❌ @${check.username} is taken.\n`;
+                            if (check.suggestions?.length) {
+                                text += `Suggestions: ${check.suggestions.join(', ')}\n`;
+                            }
+                            if (check.rejectionReasons?.length) {
+                                text += `Reasons: ${check.rejectionReasons.join(', ')}`;
+                            }
+                            await sock.sendMessage(normalizedJid, { text: text.trim() }, { quoted: message });
+                        }
+                    } catch (err) {
+                        await sock.sendMessage(normalizedJid, { text: `Error checking username: ${err.message}` }, { quoted: message });
+                    }
+                    break;
+                }
+                case '!setusername': {
+                    if (!args) {
+                        await sock.sendMessage(normalizedJid, { text: 'Usage: !setusername <username> [pin]' }, { quoted: message });
+                        break;
+                    }
+                    const [uname, pin] = args.split(' ');
+                    try {
+                        await sock.setUsername(uname, pin ? { pin } : undefined);
+                        await sock.sendMessage(normalizedJid, { text: `✅ Username set to @${uname}${pin ? ' protected with PIN ' + pin : ''}!` }, { quoted: message });
+                    } catch (err) {
+                        await sock.sendMessage(normalizedJid, { text: `Error setting username: ${err.message}` }, { quoted: message });
+                    }
+                    break;
+                }
+                case '!deleteusername': {
+                    try {
+                        await sock.deleteUsername();
+                        await sock.sendMessage(normalizedJid, { text: `✅ Username deleted successfully!` }, { quoted: message });
+                    } catch (err) {
+                        await sock.sendMessage(normalizedJid, { text: `Error deleting username: ${err.message}` }, { quoted: message });
+                    }
+                    break;
+                }
+                case '!myusername': {
+                    try {
+                        const username = await sock.getMyUsername();
+                        if (username) {
+                            await sock.sendMessage(normalizedJid, { text: `Your username: @${username}` }, { quoted: message });
+                        } else {
+                            await sock.sendMessage(normalizedJid, { text: `You don't have a username set.` }, { quoted: message });
+                        }
+                    } catch (err) {
+                        await sock.sendMessage(normalizedJid, { text: `Error getting username: ${err.message}` }, { quoted: message });
+                    }
+                    break;
+                }
+                case '!setpin': {
+                    if (!args) {
+                        await sock.sendMessage(normalizedJid, { text: 'Usage: !setpin <pin|delete>' }, { quoted: message });
+                        break;
+                    }
+                    try {
+                        const pin = args === 'delete' ? null : args;
+                        await sock.setUsernamePin(pin);
+                        await sock.sendMessage(normalizedJid, { text: pin ? `✅ Pin set to ${pin}` : `✅ Pin deleted` }, { quoted: message });
+                    } catch (err) {
+                        await sock.sendMessage(normalizedJid, { text: `Error setting pin: ${err.message}` }, { quoted: message });
+                    }
+                    break;
+                }
+                case '!findusername': {
+                    if (!args) {
+                        await sock.sendMessage(normalizedJid, { text: 'Usage: !findusername <username> [pin]' }, { quoted: message });
+                        break;
+                    }
+                    const [uname, pin] = args.split(' ');
+                    try {
+                        const result = await sock.findUserByUsername(uname, pin);
+                        if (result?.contact) {
+                            await sock.sendMessage(normalizedJid, { text: `🔍 Found user!\nJID: ${result.jid}` }, { quoted: message });
+                        } else {
+                            await sock.sendMessage(normalizedJid, { text: `❌ User @${uname} not found or not on WhatsApp.` }, { quoted: message });
+                        }
+                    } catch (err) {
+                        await sock.sendMessage(normalizedJid, { text: `Error finding user: ${err.message}` }, { quoted: message });
+                    }
+                    break;
+                }
+                case '!fetchusernames': {
+                    if (!args) {
+                        await sock.sendMessage(normalizedJid, { text: 'Usage: !fetchusernames <jid1> [jid2] ...' }, { quoted: message });
+                        break;
+                    }
+                    const jids = args.split(' ');
+                    try {
+                        const results = await sock.fetchContactUsernames(...jids);
+                        let responseText = '📋 Username Fetch Results:\n';
+                        for (const res of results) {
+                            responseText += `• ${res.id} -> ${res.username || '(no username)'}\n`;
+                        }
+                        await sock.sendMessage(normalizedJid, { text: responseText.trim() }, { quoted: message });
+                    } catch (err) {
+                        await sock.sendMessage(normalizedJid, { text: `Error fetching usernames: ${err.message}` }, { quoted: message });
+                    }
                     break;
                 }
             }
