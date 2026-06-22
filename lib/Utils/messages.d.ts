@@ -100,6 +100,6 @@ export declare const assertMediaContent: (content: proto.IMessage | null | undef
  * this is an experimental patch to make buttons work
  * Don't know how it works, but it does for now
  */
-export declare const patchMessageForMdIfRequired: (message: proto.IMessage) => proto.IMessage
+export declare const shouldIncludeBizBinaryNode: (message: proto.IMessage) => boolean
 
 export {}

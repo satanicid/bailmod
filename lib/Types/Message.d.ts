@@ -41,6 +41,13 @@ export declare const WAMessageStubType = proto.WebMessageInfo.StubType
 
 export declare const WAMessageStatus = proto.WebMessageInfo.Status
 
+export declare const AssociationType: typeof proto.MessageAssociation.AssociationType
+export declare const ButtonHeaderType: typeof proto.Message.ButtonsMessage.HeaderType
+export declare const ButtonType: typeof proto.Message.ButtonsMessage.Button.Type
+export declare const CarouselCardType: typeof proto.Message.InteractiveMessage.CarouselMessage.CarouselCardType
+export declare const ListType: typeof proto.Message.ListMessage.ListType
+export declare const ProtocolType: typeof proto.Message.ProtocolMessage.Type
+
 export type WAMediaUpload = Buffer | { url: URL | string } | { stream: Readable } | string
 
 /** Set of message types that are supported by the library */
@@ -116,10 +123,24 @@ type Ephemeral = {
 
 type ViewOnce = {
     viewOnce?: boolean
+    viewOnceV2?: boolean
+    viewOnceV2Extension?: boolean
 }
 
 type ViewOnceExt = {
     viewOnceExt?: boolean
+}
+
+type Spoiler = {
+    spoiler?: boolean
+}
+
+type Lottie = {
+    isLottie?: boolean
+}
+
+type SecureMeta = {
+    secureMetaServiceLabel?: boolean
 }
 
 type Buttonable = {
@@ -136,6 +157,14 @@ type Templatable = {
 type Interactiveable = {
    /** add buttons to the message (conflicts with normal buttons)*/
    interactiveButtons?: proto.Message.InteractiveMessage.NativeFlowMessage.INativeFlowButton[]
+   nativeFlow?: any[]
+   optionText?: string
+   optionTitle?: string
+   offerText?: string
+   offerCode?: string
+   offerUrl?: string
+   offerExpiration?: number
+   interactiveAsTemplate?: boolean
    title?: string
    subtitle?: string
    footer?: string
@@ -353,8 +382,24 @@ export type AnyRegularMessageContent = (({
         code?: string
         language?: string
         botJid?: string
-    }
-} | SharePhoneNumber | RequestPhoneNumber) & ViewOnce & ViewOnceExt
+    } | any[]
+} | SharePhoneNumber | RequestPhoneNumber) & ViewOnce & ViewOnceExt & Spoiler & Lottie & SecureMeta & RichMessageHelpers
+
+export type RichMessageHelpers = {
+    code?: string
+    links?: {
+        text: string
+        title?: string
+        url: string
+        displayName?: string
+        sources?: {
+            displayName?: string
+            subtitle?: string
+            url?: string
+        }[]
+    }[]
+    table?: string[][]
+}
 
 export type AnyMessageContent = AnyRegularMessageContent | {
     forward: WAMessage

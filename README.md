@@ -1426,6 +1426,44 @@ await sock.sendMessage(
 )
 ```
 
+### Buttons with Media & Native Flow (Mixed Buttons & sections)
+
+```ts
+await sock.sendMessage(jid, {
+   image: {
+      url: './path/to/image.jpg'
+   },
+   caption: '👆🏻 Buttons and Native Flow!',
+   footer: '@innovatorssoft/baileys',
+   buttons: [{
+      text: '👋🏻 Rating',
+      id: '#Rating'
+   }, {
+      text: '📋 Select',
+      sections: [{
+         title: '✨ Section 1',
+         rows: [{
+            header: '',
+            title: '💭 Secret Ingredient',
+            description: '',
+            id: '#SecretIngredient'
+         }]
+      }, {
+         title: '✨ Section 2',
+         highlight_label: '🔥 Popular',
+         rows: [{
+            header: '',
+            title: '🏷️ Coupon',
+            description: '',
+            id: '#CouponCode'
+         }]
+      }]
+   }]
+}, {
+   quoted: message
+})
+```
+
 #### Interactive Messages
 
 Send native formatting wrappers—like buttons, lists, URL CTAs, and Copy CTAs—without directly formatting the complex payload manually.
@@ -1641,6 +1679,63 @@ await sock.sendMessage(
     }
 )
 ```
+
+### Carousel & Native Flow
+```ts
+sock.sendMessage(jid, {
+   text: '🗂️ Interactive with Carousel!',
+   footer: '@innovatorssoft/baileys',
+   cards: [{
+      image: {
+         url: './path/to/image.jpg'
+      },
+      caption: '🖼️ Image 1',
+      footer: '🏷️️ Pinterest',
+      nativeFlow: [{
+         text: '🌐 Source',
+         url: 'https://github.com/innovatorssoft/Baileys',
+         useWebview: true
+      }]
+   }, {
+      image: {
+         url: './path/to/image.jpg'
+      },
+      caption: '🖼️ Image 2',
+      footer: '🏷️ Pinterest',
+      offerText: '🏷️ New Coupon!',
+      offerCode: '@innovatorssoft/baileys',
+      offerUrl: 'https://github.com/innovatorssoft/Baileys',
+      offerExpiration: Date.now() + 3_600_000,
+      nativeFlow: [{
+         text: '🌐 Source',
+         url: 'https://github.com/innovatorssoft/Baileys'
+      }]
+   }, {
+      image: {
+         url: './path/to/image.jpg'
+      },
+      caption: '🖼️ Image 3',
+      footer: '🏷️ Pinterest',
+      optionText: '👉🏻 Select Options',
+      optionTitle: '👉🏻 Select Options',
+      offerText: '🏷️ New Coupon!',
+      offerCode: '@innovatorssoft/baileys',
+      offerUrl: 'https://github.com/innovatorssoft/Baileys',
+      offerExpiration: Date.now() + 3_600_000,
+      nativeFlow: [{
+         text: '🛒 Product',
+         id: '#Product',
+         icon: 'default'
+      }, {
+         text: '🌐 Source',
+         url: 'https://github.com/innovatorssoft/Baileys'
+      }]
+   }]
+}, {
+   quoted: message
+})
+```
+
 ### Buttons Interactive Message
 ```ts
 await sock.sendMessage(
@@ -2602,6 +2697,87 @@ await sock.relayMessage(
     AI: true // Use capital letters
     }
 )
+```
+
+### Other Message Options
+
+These optional boolean flags can be passed to wrap or configure your outgoing messages:
+
+#### 👥 Mention All
+Mention all participants in a group chat without listing their JIDs manually.
+```javascript
+await sock.sendMessage(jid, {
+   text: 'Hello everyone!',
+   mentionAll: true
+})
+```
+
+#### 🧑‍🧑‍🧒 Group Status
+Set group status on messages (only works in group chats).
+```javascript
+await sock.sendMessage(jid, {
+   image: { url: './path/to/image.jpg' },
+   caption: '👥 Group Status!',
+   groupStatus: true
+})
+```
+
+#### 🐱 Lottie Sticker
+Mark a sticker as a Lottie sticker.
+```javascript
+await sock.sendMessage(jid, {
+   sticker: { url: './path/to/sticker.webp' },
+   isLottie: true
+})
+```
+
+#### 🏷️ Secure Meta Service Label
+Add a secure meta service label attribute to the message stanza.
+```javascript
+await sock.sendMessage(jid, {
+   text: '🏷️ Secure Label Message',
+   secureMetaServiceLabel: true
+})
+```
+
+#### 📑 Spoiler
+Wrap a message content inside a spoiler wrapper.
+```javascript
+await sock.sendMessage(jid, {
+   image: { url: './path/to/image.jpg' },
+   caption: '❔ Spoiler Content',
+   spoiler: true
+})
+```
+
+#### 👁️ View Once
+Wrap message into a standard view once message.
+```javascript
+await sock.sendMessage(jid, {
+   image: { url: './path/to/image.jpg' },
+   caption: '👁️ View Once',
+   viewOnce: true
+})
+```
+
+#### 👁️ View Once V2
+Wrap message into a view once V2 message.
+```javascript
+await sock.sendMessage(jid, {
+   image: { url: './path/to/image.jpg' },
+   caption: '👁️ View Once V2',
+   viewOnceV2: true
+})
+```
+
+#### 👁️ View Once V2 Extension
+Wrap message into a view once V2 extension message.
+```javascript
+await sock.sendMessage(jid, {
+   image: { url: './path/to/image.jpg' },
+   caption: '👁️ View Once V2 Extension',
+   viewOnceV2Extension: true // or viewOnceExt: true
+})
 ```
 
 ### Sending Messages with Link Previews

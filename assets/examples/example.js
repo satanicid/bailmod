@@ -240,7 +240,18 @@ async function startBot() {
                         '!myusername   - Retrieve your current username',
                         '!setpin       - Set or delete username PIN',
                         '!findusername - Find a user JID by username',
-                        '!fetchusernames - Fetch usernames of JIDs'
+                        '!fetchusernames - Fetch usernames of JIDs',
+                        '!carousel     - Send an interactive carousel message',
+                        '!mediabuttons - Send buttons with media & sections',
+                        '!label        - Send text with secure Meta service label',
+                        '!spoiler      - Send an image with spoiler wrapping',
+                        '!lottie       - Send a sticker with isLottie enabled',
+                        '!groupstatus  - Send status update wrapped for group',
+                        '!mentionall   - Mention all group participants',
+                        '!viewonce     - Send image as view-once V1',
+                        '!viewoncev2   - Send image as view-once V2',
+                        '!viewonceext  - Send image as view-once V2 Ext',
+                        '!interactivemsg - Send custom interactive buttons (text, image, or location)'
                     ], message, {
                         headerText: 'Available commands:',
                         footer: 'Type any of these commands to test.'
@@ -374,9 +385,9 @@ async function startBot() {
                 case '!template': {
                     await sock.sendMessage(normalizedJid, {
                         templateButtons: [
-                            { index: 1, urlButton: { displayText: 'Visit Link', url: 'https://example.com' } },
-                            { index: 2, callButton: { displayText: 'Call Support', phoneNumber: '+91XXXXXXXXXX' } },
-                            { index: 3, quickReplyButton: { displayText: 'Quick Reply', id: 'id1' } }
+                            { text: '🌐 Visit Link', url: 'https://github.com/innovatorssoft/baileys' },
+                            { text: '📞 Call Support', call: '+91XXXXXXXXXX' },
+                            { text: '👋🏻 Quick Reply', id: 'id1' }
                         ],
                         text: 'Template message body example:',
                         footer: 'Powered by Innovators Baileys'
@@ -384,14 +395,19 @@ async function startBot() {
                     break;
                 }
                 case '!interact': {
-                    await sock.sendMessage(normalizedJid, {
-                        interactiveButtons: [
-                            { name: 'quick_reply', buttonParamsJson: JSON.stringify({ display_text: 'Yes', id: 'yes' }) },
-                            { name: 'quick_reply', buttonParamsJson: JSON.stringify({ display_text: 'No', id: 'no' }) }
-                        ],
-                        body: { text: 'Are you sure you want to proceed?' },
-                        footer: { text: 'Innovators Baileys interactive' }
-                    }, { quoted: message });
+                    try {
+                        await sock.sendMessage(normalizedJid, {
+                            interactiveButtons: [
+                                { text: '👋🏻 Greeting', id: '#Greeting' },
+                                { text: '📋 Copy Code', copy: '@innovatorssoft/baileys' },
+                                { text: '🌐 Source', url: 'https://github.com/innovatorssoft/baileys' }
+                            ],
+                            body: { text: 'Are you sure you want to proceed?' },
+                            footer: { text: 'Innovators Baileys interactive' }
+                        }, { quoted: message });
+                    } catch (err) {
+                        await sock.sendMessage(normalizedJid, { text: `Error: ${err.message}` }, { quoted: message });
+                    }
                     break;
                 }
                 case '!sections': {
@@ -607,6 +623,356 @@ async function startBot() {
                         await sock.sendMessage(normalizedJid, { text: responseText.trim() }, { quoted: message });
                     } catch (err) {
                         await sock.sendMessage(normalizedJid, { text: `Error fetching usernames: ${err.message}` }, { quoted: message });
+                    }
+                    break;
+                }
+                case '!carousel': {
+                    try {
+                        const logoPath = path.join(__dirname, 'logo.png');
+                        await sock.sendMessage(normalizedJid, {
+                            text: '🗂️ Interactive with Carousel!',
+                            footer: 'Innovators Baileys V2 Carousel',
+                            cards: [
+                                {
+                                    image: { url: logoPath },
+                                    caption: '🖼️ Image 1',
+                                    footer: '🏷️ Pinterest',
+                                    nativeFlow: [{
+                                        text: '🌐 Source',
+                                        url: 'https://github.com/innovatorssoft/baileys',
+                                        useWebview: true
+                                    }]
+                                },
+                                {
+                                    image: { url: logoPath },
+                                    caption: '🖼️ Image 2',
+                                    footer: '🏷️ Pinterest',
+                                    offerText: '🏷️ New Coupon!',
+                                    offerCode: '@innovatorssoft/baileys',
+                                    offerUrl: 'https://github.com/innovatorssoft/baileys',
+                                    offerExpiration: Date.now() + 3600000,
+                                    nativeFlow: [{
+                                        text: '🌐 Source',
+                                        url: 'https://github.com/innovatorssoft/baileys'
+                                    }]
+                                },
+                                {
+                                    image: { url: logoPath },
+                                    caption: '🖼️ Image 3',
+                                    footer: '🏷️ Pinterest',
+                                    optionText: '👉🏻 Select Options',
+                                    optionTitle: '👉🏻 Select Options',
+                                    offerText: '🏷️ New Coupon!',
+                                    offerCode: '@innovatorssoft/baileys',
+                                    offerUrl: 'https://github.com/innovatorssoft/baileys',
+                                    offerExpiration: Date.now() + 3600000,
+                                    nativeFlow: [
+                                        {
+                                            text: '🛒 Product',
+                                            id: '#Product',
+                                            icon: 'default'
+                                        },
+                                        {
+                                            text: '🌐 Source',
+                                            url: 'https://github.com/innovatorssoft/baileys'
+                                        }
+                                    ]
+                                }
+                            ]
+                        }, { quoted: message });
+                    } catch (err) {
+                        await sock.sendMessage(normalizedJid, { text: `Error: ${err.message}` }, { quoted: message });
+                    }
+                    break;
+                }
+                case '!mediabuttons': {
+                    try {
+                        const logoPath = path.join(__dirname, 'logo.png');
+                        await sock.sendMessage(normalizedJid, {
+                            image: { url: logoPath },
+                            caption: '👆🏻 Buttons and Native Flow!',
+                            footer: 'Innovators Baileys V2',
+                            buttons: [
+                                {
+                                    text: '👋🏻 Rating',
+                                    id: '#Rating'
+                                },
+                                {
+                                    text: '📋 Select',
+                                    sections: [
+                                        {
+                                            title: '✨ Section 1',
+                                            rows: [{
+                                                header: '',
+                                                title: '💭 Secret Ingredient',
+                                                description: '',
+                                                id: '#SecretIngredient'
+                                            }]
+                                        },
+                                        {
+                                            title: '✨ Section 2',
+                                            highlight_label: '🔥 Popular',
+                                            rows: [{
+                                                header: '',
+                                                title: '🏷️ Coupon',
+                                                description: '',
+                                                id: '#CouponCode'
+                                            }]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }, { quoted: message });
+                    } catch (err) {
+                        await sock.sendMessage(normalizedJid, { text: `Error: ${err.message}` }, { quoted: message });
+                    }
+                    break;
+                }
+                case '!label': {
+                    try {
+                        await sock.sendMessage(normalizedJid, {
+                            text: '🏷️ Message sent with secureMetaServiceLabel!',
+                            secureMetaServiceLabel: true
+                        }, { quoted: message });
+                    } catch (err) {
+                        await sock.sendMessage(normalizedJid, { text: `Error: ${err.message}` }, { quoted: message });
+                    }
+                    break;
+                }
+                case '!spoiler': {
+                    try {
+                        const logoPath = path.join(__dirname, 'logo.png');
+                        await sock.sendMessage(normalizedJid, {
+                            image: { url: logoPath },
+                            caption: '❔ Spoiler Image',
+                            spoiler: true
+                        }, { quoted: message });
+                    } catch (err) {
+                        await sock.sendMessage(normalizedJid, { text: `Error: ${err.message}` }, { quoted: message });
+                    }
+                    break;
+                }
+                case '!lottie': {
+                    try {
+                        const faviconPath = path.join(__dirname, 'favicon.png');
+                        await sock.sendMessage(normalizedJid, {
+                            sticker: { url: faviconPath },
+                            isLottie: true
+                        }, { quoted: message });
+                    } catch (err) {
+                        await sock.sendMessage(normalizedJid, { text: `Error: ${err.message}` }, { quoted: message });
+                    }
+                    break;
+                }
+                case '!groupstatus': {
+                    try {
+                        if (!normalizedJid.endsWith('@g.us')) {
+                            await sock.sendMessage(normalizedJid, { text: '❌ This command can only be used in group chats!' }, { quoted: message });
+                            break;
+                        }
+                        const logoPath = path.join(__dirname, 'logo.png');
+                        await sock.sendMessage(normalizedJid, {
+                            image: { url: logoPath },
+                            caption: '👥 Group Status Update!',
+                            groupStatus: true
+                        });
+                    } catch (err) {
+                        await sock.sendMessage(normalizedJid, { text: `Error: ${err.message}` }, { quoted: message });
+                    }
+                    break;
+                }
+                case '!mentionall': {
+                    try {
+                        if (!normalizedJid.endsWith('@g.us')) {
+                            await sock.sendMessage(normalizedJid, { text: '❌ This command can only be used in group chats!' }, { quoted: message });
+                            break;
+                        }
+                        await sock.sendMessage(normalizedJid, {
+                            text: '📢 Mentioning all group participants using the mentionAll option!',
+                            mentionAll: true
+                        }, { quoted: message });
+                    } catch (err) {
+                        await sock.sendMessage(normalizedJid, { text: `Error: ${err.message}` }, { quoted: message });
+                    }
+                    break;
+                }
+                case '!viewonce': {
+                    try {
+                        const logoPath = path.join(__dirname, 'logo.png');
+                        await sock.sendMessage(normalizedJid, {
+                            image: { url: logoPath },
+                            caption: '👁️ View Once message (V1)',
+                            viewOnce: true
+                        }, { quoted: message });
+                    } catch (err) {
+                        await sock.sendMessage(normalizedJid, { text: `Error: ${err.message}` }, { quoted: message });
+                    }
+                    break;
+                }
+                case '!viewoncev2': {
+                    try {
+                        const logoPath = path.join(__dirname, 'logo.png');
+                        await sock.sendMessage(normalizedJid, {
+                            image: { url: logoPath },
+                            caption: '👁️ View Once V2 message',
+                            viewOnceV2: true
+                        }, { quoted: message });
+                    } catch (err) {
+                        await sock.sendMessage(normalizedJid, { text: `Error: ${err.message}` }, { quoted: message });
+                    }
+                    break;
+                }
+                case '!viewonceext': {
+                    try {
+                        const logoPath = path.join(__dirname, 'logo.png');
+                        await sock.sendMessage(normalizedJid, {
+                            image: { url: logoPath },
+                            caption: '👁️ View Once V2 Extension message',
+                            viewOnceV2Extension: true
+                        }, { quoted: message });
+                    } catch (err) {
+                        await sock.sendMessage(normalizedJid, { text: `Error: ${err.message}` }, { quoted: message });
+                    }
+                    break;
+                }
+                case '!interactivemsg': {
+                    try {
+                        const logoPath = path.join(__dirname, 'logo.png');
+                        const subcommand = args.toLowerCase().trim();
+
+                        if (subcommand === 'image') {
+                            await sock.sendMessage(normalizedJid, {
+                                image: { url: logoPath },
+                                caption: 'This is an Interactive Message with an Image Header!',
+                                title: 'Interactive Image',
+                                subtitle: 'Image Subtitle',
+                                footer: 'Innovators Baileys V2',
+                                interactiveButtons: [
+                                    {
+                                        name: 'quick_reply',
+                                        buttonParamsJson: JSON.stringify({
+                                            display_text: 'Click Me!',
+                                            id: 'img_click_id'
+                                        })
+                                    }
+                                ],
+                                hasMediaAttachment: true
+                            }, { quoted: message });
+                        }
+                        else if (subcommand === 'location') {
+                            await sock.sendMessage(normalizedJid, {
+                                location: {
+                                    degreesLatitude: -6.200000,
+                                    degreesLongitude: 106.816666,
+                                    name: 'InnovatorsSoft HQ'
+                                },
+                                caption: 'This is an Interactive Message with a Location Header!',
+                                title: 'HQ Location',
+                                subtitle: 'Jakarta, Indonesia',
+                                footer: 'Innovators Baileys V2',
+                                interactiveButtons: [
+                                    {
+                                        name: 'quick_reply',
+                                        buttonParamsJson: JSON.stringify({
+                                            display_text: 'View Website',
+                                            id: 'loc_click_id'
+                                        })
+                                    }
+                                ]
+                            }, { quoted: message });
+                        }
+                        else {
+                            await sock.sendMessage(normalizedJid, {
+                                text: 'This is a text-based Interactive message showing all native flow buttons!',
+                                title: 'Native Flow Showcase',
+                                subtitle: 'Subtitle Example',
+                                footer: 'Powered by Innovators Baileys V2',
+                                interactiveButtons: [
+                                    {
+                                        name: 'quick_reply',
+                                        buttonParamsJson: JSON.stringify({
+                                            display_text: 'Quick Reply',
+                                            id: 'qr_test_id'
+                                        })
+                                    },
+                                    {
+                                        name: 'cta_url',
+                                        buttonParamsJson: JSON.stringify({
+                                            display_text: 'Follow Channel',
+                                            url: 'https://whatsapp.com/channel/0029Vag9VSI2ZjCocqa2lB1y',
+                                            merchant_url: 'https://whatsapp.com/channel/0029Vag9VSI2ZjCocqa2lB1y'
+                                        })
+                                    },
+                                    {
+                                        name: 'cta_copy',
+                                        buttonParamsJson: JSON.stringify({
+                                            display_text: 'Copy Coupon',
+                                            copy_code: 'INNOVATORS_PRO_50'
+                                        })
+                                    },
+                                    {
+                                        name: 'cta_call',
+                                        buttonParamsJson: JSON.stringify({
+                                            display_text: 'Call Hotline',
+                                            phone_number: '+1234567890'
+                                        })
+                                    },
+                                    {
+                                        name: 'galaxy_message',
+                                        buttonParamsJson: JSON.stringify({
+                                            mode: 'published',
+                                            flow_message_version: '3',
+                                            flow_token: '1:1307913409923914:293680f87029f5a13d1ec5e35e718af3',
+                                            flow_id: '1307913409923914',
+                                            flow_cta: 'Open Flows Survey',
+                                            flow_action: 'navigate',
+                                            flow_action_payload: {
+                                                screen: 'QUESTION_ONE',
+                                                params: {
+                                                    user_id: '123456789',
+                                                    referral: 'campaign_xyz'
+                                                }
+                                            },
+                                            flow_metadata: {
+                                                flow_json_version: '201',
+                                                data_api_protocol: 'v2',
+                                                flow_name: 'Lead Qualification [en]',
+                                                data_api_version: 'v2',
+                                                categories: ['Lead Generation', 'Sales']
+                                            }
+                                        })
+                                    },
+                                    {
+                                        name: 'single_select',
+                                        buttonParamsJson: JSON.stringify({
+                                            title: 'Open Options List',
+                                            sections: [
+                                                {
+                                                    title: 'Available Services',
+                                                    highlight_label: '🔥 Highly Recommended',
+                                                    rows: [
+                                                        {
+                                                            header: 'Service A',
+                                                            title: 'Innovators Baileys Fork',
+                                                            description: 'Custom features & stability fixes',
+                                                            id: 'service_baileys_id'
+                                                        },
+                                                        {
+                                                            header: 'Service B',
+                                                            title: 'Rust Integration',
+                                                            description: 'High-performance messaging pipeline',
+                                                            id: 'service_rust_id'
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        })
+                                    }
+                                ]
+                            }, { quoted: message });
+                        }
+                    } catch (err) {
+                        await sock.sendMessage(normalizedJid, { text: `Error: ${err.message}` }, { quoted: message });
                     }
                     break;
                 }

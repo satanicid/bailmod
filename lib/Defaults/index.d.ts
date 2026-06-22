@@ -24,6 +24,7 @@ export declare const KEY_BUNDLE_TYPE: Buffer
 export declare const NOISE_WA_HEADER: Buffer
 
 export declare const URL_REGEX: RegExp
+export declare const LEXER_REGEX: RegExp
 
 export declare const WA_CERT_DETAILS: {
     SERIAL: number

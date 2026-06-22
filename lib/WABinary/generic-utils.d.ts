@@ -26,3 +26,5 @@ export declare const getBinaryFilteredButtons: (nodeContent: BinaryNode | Binary
 export declare const getBinaryFilteredBizBot: (nodeContent: BinaryNode | BinaryNode['content']) => BinaryNode['content']
 
 export declare function binaryNodeToString(node: BinaryNode | BinaryNode['content'], i?: number): any
+
+export declare const getBizBinaryNode: (message: proto.IMessage) => BinaryNode
